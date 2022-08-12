@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2021 Micro Focus or one of its affiliates.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.github.cafapi</groupId>
+        <artifactId>caf-common-parent</artifactId>
+        <version>2.3.0-212</version>
+    </parent>
+
+    <groupId>com.github.cafapi</groupId>
+    <artifactId>buildenv-dotnet-mono-image</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>DotNet 6 Build Environment with Mono Image</name>
+    <description>An openSUSE-based build environment image for .NET 6 projects</description>
+    <url>https://github.com/CAFapi/buildenv-dotnet-mono-image</url>
+
+    <inceptionYear>2021</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>DavidGerald-Milligan</id>
+            <name>David Milligan</name>
+            <email>davidgerald.milligan@microfocus.com</email>
+        </developer>
+        <developer>
+            <id>dermot-hardy</id>
+            <name>Dermot Hardy</name>
+            <email>dermot.hardy@microfocus.com</email>
+        </developer>
+        <developer>
+            <id>tonymcveigh</id>
+            <name>Tony McVeigh</name>
+            <email>tony.mcveigh@microfocus.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/CAFapi/buildenv-dotnet-mono-image.git</connection>
+        <developerConnection>scm:git:https://github.com/CAFapi/buildenv-dotnet-mono-image.git</developerConnection>
+        <url>https://github.com/CAFapi/buildenv-dotnet-mono-image</url>
+    </scm>
+
+    <properties>
+        <copyrightYear>2021</copyrightYear>
+        <copyrightNotice>Copyright ${copyrightYear} Micro Focus or one of its affiliates.</copyrightNotice>
+        <maven.install.skip>true</maven.install.skip>
+        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+        <dockerHubOrganization>cafapi</dockerHubOrganization>
+        <dockerCafImagePrefix>${dockerImagePrefix}${dockerHubOrganization}${dockerOrgSeperator}</dockerCafImagePrefix>
+        <dockerProjectVersion>${dockerVersionSeperator}${project.version}</dockerProjectVersion>
+        <DOCKER_HUB_PUBLIC>${dockerHubPublic}</DOCKER_HUB_PUBLIC>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.38.1</version>
+                <executions>
+                    <execution>
+                        <id>docker-build</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>docker-push</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>${dockerCafImagePrefix}buildenv-dotnet${dockerProjectVersion}</name>
+                            <build>
+                                <dockerFileDir>.</dockerFileDir>
+                                <args>
+                                    <!-- Enable internet access -->
+                                    <http_proxy>${env.HTTP_PROXY}</http_proxy>
+                                    <https_proxy>${env.HTTPS_PROXY}</https_proxy>
+                                    <no_proxy>${env.NO_PROXY}</no_proxy>
+                                </args>
+                            </build>
+                        </image>
+                    </images>
+                    <verbose>api,build</verbose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
