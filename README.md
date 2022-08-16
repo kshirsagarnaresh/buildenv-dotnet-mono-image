@@ -7,11 +7,11 @@ This project builds a Docker image that contains the tooling necessary to build 
 #### As an SEPG Build Environment Image
 The Docker image should be specified in the `official-build.props` file:
 ```
-SEPG_BUILD_ENV_IMAGE=cafapi/buildenv-dotnet:1.0.0
+SEPG_BUILD_ENV_IMAGE=cafapi/buildenv-dotnet-mono:1.0.0
 ```
 Or for the current pre-release version:
 ```
-SEPG_BUILD_ENV_IMAGE=cafapi/prereleases:buildenv-dotnet-1.1.0-SNAPSHOT
+SEPG_BUILD_ENV_IMAGE=cafapi/prereleases:buildenv-dotnet-mono-1.1.0-SNAPSHOT
 ```
 
 ### Local Use
@@ -19,7 +19,7 @@ The image can also be used locally, for example in a WSL environment.
 
 Create a convenience function along the following lines - you may wish to vary some details to suit your environment:
 ```
-function buildenv-dotnet {
+function buildenv-dotnet-mono {
   local cDrive;
   local userProfile;
   local wslUserProfile="$(wslpath "$(cmd.exe /C "echo | set /p=%USERPROFILE%" 2>/dev/null)")";
@@ -38,19 +38,19 @@ function buildenv-dotnet {
     -h buildenv-dotnet \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v "${cDrive}":/mnt/c \
-    -v buildenv-dotnet_home:/root \
+    -v buildenv-dotnet-mono_home:/root \
     -v "${userProfile}"/.gnupg:/root/.gnupg \
     -v "${userProfile}"/.m2:/root/.m2 \
     -e HTTP_PROXY -e HTTPS_PROXY -e NO_PROXY \
     -e http_proxy -e https_proxy -e no_proxy \
     -w "$(pwd)" \
-    cafapi/prereleases:buildenv-dotnet-1.1.0-SNAPSHOT "$@";
+    cafapi/prereleases:buildenv-dotnet-mono-1.1.0-SNAPSHOT "$@";
 }
 ```
 
 You can use the function to run tools that are in the build environment image:
 ```
-buildenv-dotnet dotnet build
+buildenv-dotnet-mono dotnet build
 ```
 
 If you find this useful then it may be convenient to add the function to your `~/.bashrc` file so that you have it readily available to you.
