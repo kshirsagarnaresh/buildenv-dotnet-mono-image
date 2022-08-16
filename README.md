@@ -2,6 +2,7 @@
 
 This project builds a Docker image that contains the tooling necessary to build .NET projects.
 
+
 ### Usage
 
 #### As an SEPG Build Environment Image
